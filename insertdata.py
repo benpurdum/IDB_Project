@@ -2,8 +2,8 @@ from random import randint
 from werkzeug.security import generate_password_hash
 
 departments = ["Music", "History", "Biology", "Comp. Sci.", "Elec. Eng.", "Finance", "Physics"]
-first_names = ["Ben", "Jacob", "Zoe", "Kyle", "Irving", "Charlie", "Archie", "Colin", "Sean", "Rowan"]
-last_names = ["Purdum", "Ford", "Smith", "Mallory", "Six", "Burrows", "Horne", "Grant", "Shea", "Ess"]
+first_names = ["Ben", "Jacob", "Zoe", "Kyle", "Irving", "Charlie", "Archie", "Colin", "Sean", "Rowan", "TJ", "McLovin"]
+last_names = ["Purdum", "Ford", "Smith", "Mallory", "Six", "Burrows", "Horne", "Grant", "Shea", "Ess", "Raklovits", "McLovin"]
 building = ["Bowman", "MSB", "Smith", "Kent", "Taylor", "Crawford", "Franklin"]
 courses = ["CS1", "Physics 1", "World History 1", "Biology 1", "Engineering 1", "Finance 1", "Physics 1",
            "CS2", "Physics 2", "World History 2", "Biology 2", "Engineering 2", "Finance 2", "Physics 2", "Scuba Diving"]
@@ -45,6 +45,7 @@ class Section:
 
 students = []
 instructors = []
+names = []
 rooms = []
 sections = []
 
@@ -72,8 +73,17 @@ for i in range(20):
     fname = first_names[ran]
     ran = randint(0, len(last_names) - 1)
     lname = last_names[ran]
-
     user = fname+lname
+
+    if user in names:
+        while user in names:
+            ran = randint(0, len(first_names) - 1)
+            fname = first_names[ran]
+            ran = randint(0, len(last_names) - 1)
+            lname = last_names[ran]
+            user = fname+lname
+
+    names.append(user)
     pas = generate_password_hash("password")
     sql.append(f"INSERT INTO accounts VALUES ('{id}', '{user}', '{pas}', 'Student');")
 
@@ -94,13 +104,22 @@ for i in range(10):
     fname = first_names[ran]
     ran = randint(0, len(last_names) - 1)
     lname = last_names[ran]
+    user = fname+lname
+
+    if user in names:
+        while user in names:
+            ran = randint(0, len(first_names) - 1)
+            fname = first_names[ran]
+            ran = randint(0, len(last_names) - 1)
+            lname = last_names[ran]
+            user = fname+lname
+
+        
     sql.append(f"INSERT INTO name VALUES ('{n_id}', '{fname}', 'NULL', '{lname}', 'NULL');")
 
     ran = randint(0, len(departments) - 1)
     dept = departments[ran]
     salary = randint(40000, 120000)
-
-    user = fname+lname
     pas = generate_password_hash("password")
     sql.append(f"INSERT INTO accounts VALUES ('{id}', '{user}', '{pas}', 'Instructor');")
 
@@ -191,6 +210,9 @@ for c in sections:
 for i in range(len(slcourse)):
     sql.append(f"INSERT INTO prereq VALUES ('{slcourse[i]}', '{flcourse[i]}');")
 
+#avisor - s_id  i_id
+for i in students:
+    sql.append(f"INSERT INTO advisor VALUES ('{i.id}', '{instructors[randint(0, len(instructors) - 1)].id}');")
 
 
 #write
