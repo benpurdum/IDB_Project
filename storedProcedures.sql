@@ -81,7 +81,7 @@ CREATE PROCEDURE updateInstructorDept (
     IN pDept_name VARCHAR(20)
 )
 BEGIN
-    UPDATE Instructor
+    UPDATE instructor
     SET dept_name = pDept_name
     WHERE instructor.ID = pID;
 END //
@@ -93,11 +93,14 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE deleteInstructor (
-    In pID VARCHAR(5)
+    IN pID VARCHAR(5)
 )
 BEGIN
-    delete from instructor
-    where instructor.ID = pID;
+    DELETE i, n, a
+    FROM instructor i
+    INNER JOIN name n ON i.name_id = n.name_id
+    INNER JOIN accounts a on i.ID = a.ID
+    WHERE i.ID = pID;
 END //
 DELIMITER ;
 
@@ -109,13 +112,22 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE createStudent (
 IN pID VARCHAR(5),
-IN pName VARCHAR(20),
+IN nID VARCHAR(5),
+IN pFirstName VARCHAR(20),
+IN pMiddleName VARCHAR(20),
+IN pLastName VARCHAR(20),
+IN pSecondName VARCHAR(20),
 IN pDept_name VARCHAR(20),
-IN pTot_cred DECIMAL(3,0)
+IN pUsername VARCHAR(30),
+IN pPassword VARCHAR(255)
 )
 BEGIN
-    INSERT INTO student (ID, name, dept_name, tot_cred)
-    VALUES (pID, pName, pDept_name, pTot_cred);
+    INSERT INTO name (name_id, first_name, middle_name, last_name, second_name)
+    VALUES (nID, pFirstName, pMiddleName, pLastName, pSecondName);
+    INSERT INTO accounts (ID, username, password, permission)
+    VALUES (pID, pUsername, pPassword, 'Student');
+    INSERT INTO student (ID, name_id, dept_name, )
+    VALUES (pID, nID, pDept_name, pSalary);
 END //
 DELIMITER ;
 
@@ -123,11 +135,12 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE findStudent (
-    In pID VARCHAR(5)
+    IN pID VARCHAR(5)
 )
 BEGIN
-    SELECT * FROM instructor
-    where student.ID = pID;
+    SELECT * FROM student as i, name as n
+    WHERE i.ID = pid
+    AND i.name_id = n.name_id;
 END //
 DELIMITER ;
 
@@ -157,16 +170,18 @@ BEGIN
 END //
 DELIMITER ;
 
-
 --Student Delete
 
 DELIMITER //
-CREATE PROCEDURE deleteStudent (
+CREATE PROCEDURE deleteInstructor (
     IN pID VARCHAR(5)
 )
 BEGIN
-    DELETE FROM student
-    WHERE student.ID = pID;
+    DELETE i, n, a
+    FROM student i
+    INNER JOIN name n ON i.name_id = n.name_id
+    INNER JOIN accounts a on i.ID = a.ID
+    WHERE i.ID = pID;
 END //
 DELIMITER ;
 
