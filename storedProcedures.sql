@@ -126,8 +126,8 @@ BEGIN
     VALUES (nID, pFirstName, pMiddleName, pLastName, pSecondName);
     INSERT INTO accounts (ID, username, password, permission)
     VALUES (pID, pUsername, pPassword, 'Student');
-    INSERT INTO student (ID, name_id, dept_name, )
-    VALUES (pID, nID, pDept_name, pSalary);
+    INSERT INTO student (ID, name_id, dept_name)
+    VALUES (pID, nID, pDept_name);
 END //
 DELIMITER ;
 
@@ -173,7 +173,7 @@ DELIMITER ;
 --Student Delete
 
 DELIMITER //
-CREATE PROCEDURE deleteInstructor (
+CREATE PROCEDURE deleteStudent (
     IN pID VARCHAR(5)
 )
 BEGIN
@@ -195,14 +195,14 @@ CREATE PROCEDURE createSection (
 IN pCourse_id VARCHAR(8),
 IN pSec_id VARCHAR(8),
 IN pSemester VARCHAR(6),
-IN pYear DECIMAL(4,0)
+IN pYear DECIMAL(4,0),
 IN pBuilding VARCHAR(15),
-IN pRoom_number VARCHAR(7),
+IN pRoom_id VARCHAR(7),
 IN pTime_slot_id VARCHAR(4)
 )
 BEGIN
-    INSERT INTO section (course_id, sec_id, semester, year, building, room_number, time_slot_id)
-    VALUES (pCourse_id, pSec_id, pSemester, pYear, pBuilding, pRoom_number, pTime_slot_id);
+    INSERT INTO section (course_id, sec_id, semester, year, building, room_id, time_slot_id)
+    VALUES (pCourse_id, pSec_id, pSemester, pYear, pBuilding, pRoom_id, pTime_slot_id);
 END //
 DELIMITER ;
 
@@ -234,13 +234,13 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE updateSectionRoomNumber (
+CREATE PROCEDURE updateSectionRoomID (
     IN pSec_id VARCHAR(8),
-    IN pRoom_number VARCHAR(7)
+    IN pRoom_id VARCHAR(7)
 )
 BEGIN
     UPDATE section
-    SET room_number = pRoom_number
+    SET room_id = pRoom_id
     WHERE section.sec_id = pSec_id;
 END //
 DELIMITER ;
@@ -261,11 +261,13 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE deleteSection (
-    In pSec_id VARCHAR(5)
+    In pSec_id VARCHAR(5),
+    In pCourse_id VARCHAR(8)
 )
 BEGIN
     delete from section
-    where section.sec_id = pSec_id;
+    where section.sec_id = pSec_id
+    and section.course_id = pCourse_id;
 END //
 DELIMITER ;
 
