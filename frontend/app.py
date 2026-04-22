@@ -14,11 +14,14 @@ app.secret_key = 'Epic Ben and Zoe Website'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'loggedin' in session:
+        return render_template('home.html', username=session['username'])
+    return redirect('/login')
 
-@app.route('/login/')
+@app.route('/login', methods=['GET','POST'])
 def login():
     msg = ''
+    account = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
@@ -30,21 +33,24 @@ def login():
         cursor.close()
     
 
-    #check if user + password is correct
-    if account and check_password_hash(account[2], password):
-        session['loggedin'] = True
-        session['id'] = account[0] 
-        session['username'] = account[1]
-        return redirect(url_for('index'))
-    else:
-        msg = 'Incorrect username/password!'   
+        #check if user + password is correct
+        if account and check_password_hash(account[2], password):
+            print("seccuess")
+            session['loggedin'] = True
+            session['id'] = account[0] 
+            session['username'] = account[1]
+            session['permission'] = account[3]
+            return redirect(url_for('home'))
+        else:
+            msg = 'Incorrect username/password!'   
 
-    return render_template('home.html', msg=msg)
+    return render_template('index.html', msg=msg)
 
-@app.route('/login/home')
+@app.route('/home')
 def home():
     if 'loggedin' in session:
-        return render_template('home.html', username=session['username'])
+        #print(session['permission'])
+        return render_template('home.html', username=session['username'], permission=session['permission'])
     return redirect(url_for('login'))
 
 # Logout 
@@ -53,6 +59,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('permission', None)
     return redirect(url_for('login'))
 
 
