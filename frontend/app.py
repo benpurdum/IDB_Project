@@ -712,5 +712,3 @@ def readTimeSlot():
 @app.route('/registerclass')
 @app.route('/sectioninfo')
 @app.route('/advisorinfo')
-def advisorInfo():
-    return 0
