@@ -127,37 +127,142 @@ def settings():
     return render_template('settings.html', data=data, departments=departments)
 
 #admin stuff
-@app.route('/addstudent')
-@app.route('/readstudent')
-@app.route('/updatestudent')
-@app.route('/deletestudent')
-@app.route('/addinstructor')
-@app.route('/readinstructor')
-@app.route('/updateinstructor')
-@app.route('/deleteinstructor')
-@app.route('/adddept')
-@app.route('/readdept')
-@app.route('/updatedept')
-@app.route('/deletedept')
-@app.route('/addclassroom')
-@app.route('/readclassroom')
-@app.route('/updateclassroom')
-@app.route('/deleteclassroom')
-@app.route('/addcourse')
-@app.route('/readcourse')
-@app.route('/updatecourse')
-@app.route('/deletecourse')
-@app.route('/addsection')
-@app.route('/readsection')
-@app.route('/updatesection')
-@app.route('/deletesection')
-@app.route('/addtimeslot')
-@app.route('/readtimeslot')
-@app.route('/updatetimeslot')
-@app.route('/deletetimeslot')
-@app.route('/assignteacher')
-@app.route('/modifyteacher')
-@app.route('/removeteacher')
+@app.route('/addstudent', methods=['GET','POST'])
+@app.route('/readstudent', methods=['GET','POST'])
+def readStudent():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllStudents()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Student', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findStudent(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Student', data=data)
+
+@app.route('/updatestudent', methods=['GET','POST'])
+@app.route('/deletestudent', methods=['GET','POST'])
+@app.route('/addinstructor', methods=['GET','POST'])
+@app.route('/readinstructor', methods=['GET','POST'])
+def readInstructor():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllInstructors()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Instructor', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findInstructor(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Instructor', data=data)
+    
+@app.route('/updateinstructor', methods=['GET','POST'])
+@app.route('/deleteinstructor', methods=['GET','POST'])
+@app.route('/adddept', methods=['GET','POST'])
+@app.route('/readdept', methods=['GET','POST'])
+def readDept():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllDepts()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Dept', data=data)
+    if request.method == 'POST':
+        id = request.form['name']
+        cursor = db.cursor()
+        sql = "call findDept(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Dept', data=data)
+
+@app.route('/updatedept', methods=['GET','POST'])
+@app.route('/deletedept', methods=['GET','POST'])
+@app.route('/addclassroom', methods=['GET','POST'])
+@app.route('/readclassroom', methods=['GET','POST'])
+def readClassroom():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllClassrooms()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Classroom', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findClassroom(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Classroom', data=data)
+
+@app.route('/updateclassroom', methods=['GET','POST'])
+@app.route('/deleteclassroom', methods=['GET','POST'])
+@app.route('/addcourse', methods=['GET','POST'])
+@app.route('/readcourse', methods=['GET','POST'])
+def readCourse():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllCourses()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Course', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findCourse(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Course', data=data)
+
+@app.route('/updatecourse', methods=['GET','POST'])
+@app.route('/deletecourse', methods=['GET','POST'])
+@app.route('/addsection', methods=['GET','POST'])
+@app.route('/readsection', methods=['GET','POST'])
+def readSection():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllSections()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Section', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findSectionsOfClass(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Section', data=data)
+
+@app.route('/updatesection', methods=['GET','POST'])
+@app.route('/deletesection', methods=['GET','POST'])
+@app.route('/addtimeslot', methods=['GET','POST'])
+@app.route('/readtimeslot', methods=['GET','POST'])
+def readTimeSlot():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllTimeslots()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Time Slot', data=data)
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call findTimeslot(%s)"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        return render_template('show.html', show='Time Slot', data=data)
+
+@app.route('/updatetimeslot', methods=['GET','POST'])
+@app.route('/deletetimeslot', methods=['GET','POST'])
+@app.route('/assignteacher', methods=['GET','POST'])
+@app.route('/modifyteacher', methods=['GET','POST'])
+@app.route('/removeteacher', methods=['GET','POST'])
 
 #instructor stuff
 @app.route('/submitgrades')
@@ -174,6 +279,5 @@ def settings():
 @app.route('/registerclass')
 @app.route('/sectioninfo')
 @app.route('/advisorinfo')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+def addstudent():
+    return 0

@@ -33,10 +33,12 @@ CREATE PROCEDURE findInstructor (
     IN pID VARCHAR(5)
 )
 BEGIN
-    SELECT * FROM instructor as i, name as n
-    WHERE i.ID = pid
-    AND i.name_id = n.name_id;
-END //
+    select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name, s.salary
+    from instructor s
+    inner join name n
+    on s.name_id = n.name_id
+    where s.ID = pID;
+END
 DELIMITER ;
 
 --Instructor Update
@@ -166,10 +168,12 @@ CREATE PROCEDURE findStudent (
     IN pID VARCHAR(5)
 )
 BEGIN
-    SELECT * FROM student as i, name as n
-    WHERE i.ID = pid
-    AND i.name_id = n.name_id;
-END //
+    select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name
+    from student s
+    inner join name n
+    on s.name_id = n.name_id
+    where s.ID = pID;
+END
 DELIMITER ;
 
 --Student Update

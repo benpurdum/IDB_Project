@@ -484,7 +484,7 @@ DELIMITER ;
 
 --CHECK ADVISOR INFO
 DELIMITER //
-CREATE PROCEDURE checkCourses (
+CREATE PROCEDURE checkAdvisor (
     IN pID VARCHAR(5)
 )
 BEGIN
@@ -494,7 +494,63 @@ BEGIN
     on i.ID = a.i_ID
     inner join name n
     on i.name_id = n.name_id
-    where a.s_ID = pID
+    where a.s_ID = pID;
+END // 
+DELIMITER ;
+
+--stuff i forgot
+DELIMITER //
+CREATE PROCEDURE getAllCourses ()
+BEGIN
+    select * from course;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllStudents ()
+BEGIN
+    select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name
+    from student s
+    inner join name n
+    on s.name_id = n.name_id;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllInstructors ()
+BEGIN
+    select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name, s.salary
+    from instructor s
+    inner join name n
+    on s.name_id = n.name_id;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllDepts ()
+BEGIN
+    select * from department;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllClassrooms ()
+BEGIN
+    select * from classroom;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllSections ()
+BEGIN
+    select * from section;
+END // 
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getAllTimeslots ()
+BEGIN
+    select * from time_slot;
 END // 
 DELIMITER ;
 
