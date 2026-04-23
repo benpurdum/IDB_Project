@@ -1,0 +1,194 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% if show == 'Student' %}
+	<div class ="container">
+		<form action="/updatestudent" method = "POST">
+			<p><h2>Update a Student:</h2></p>
+            <p><h2>(ONLY FILL IN DATA TO BE UPDATED)</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">ID (1XXXX) (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">First Name</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="First Name" name = "firstname">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Middle Name (Optional)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Middle Name" name = "middlename">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Last Name</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Last Name" name = "lastname">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Second Name (Optional)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Second Name" name = "secondname">
+			</div>
+			<div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Username</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Username" name = "username">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Password</label>
+				<input type="password" class="form-control" id="formGroupExampleInput" placeholder="Password" name = "password">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'Instructor' %}
+	<div class ="container">
+		<form action="/updateinstructor" method = "POST">
+			<p><h2>Update an Instructor:</h2></p>
+            <p><h2>(ONLY FILL IN DATA TO BE UPDATED)</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">ID (2XXXX) (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">First Name</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="First Name" name = "firstname">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Middle Name (Optional)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Middle Name" name = "middlename">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Last Name</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Last Name" name = "lastname">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Second Name (Optional)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Second Name" name = "secondname">
+			</div>
+			<div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Salary (XXXXX.XX)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Salary" name = "salary">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Username</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Username" name = "username">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Password</label>
+				<input type="password" class="form-control" id="formGroupExampleInput" placeholder="Password" name = "password">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'Dept' %}
+	<div class ="container">
+		<form action="/updatedept" method = "POST">
+			<p><h2>Update a Department:</h2></p>
+            <p><h2>(ONLY FILL IN DATA TO BE UPDATED)</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Department Name (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Name" name = "name">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Building</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Building" name = "building">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Budget (XXXXX.XX)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Budget" name = "budget">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'Classroom' %}
+	<div class ="container">
+		<form action="/updateclassroom" method = "POST">
+			<p><h2>Update a Classroom:</h2></p>
+            <p><h2>(ONLY FILL IN DATA TO BE UPDATED)</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Classroom ID (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Building</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Building" name = "building">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Room Number</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Room Number" name = "roomnumber">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Capacity</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Capacity" name = "capacity">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'Course' %}
+	<div class ="container">
+		<form action="/updatecourse" method = "POST">
+			<p><h2>Update a Course:</h2></p>
+            <p><h2>(ONLY FILL IN DATA TO BE UPDATED)</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Title</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Building" name = "title">
+			</div>
+			<div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Credits</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Credits" name = "credits">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'Section' %}
+	<div class ="container">
+		<form action="/updatesection" method = "POST">
+			<p><h2>Update a Section:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Course ID" name = "cid">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Section ID (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Section ID" name = "sid">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Building</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Building" name = "building">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Room ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Room ID" name = "rid">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% endif %}
+{% endblock %}

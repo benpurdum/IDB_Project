@@ -87,7 +87,7 @@ for i in range(20):
     pas = generate_password_hash("password")
     sql.append(f"INSERT INTO accounts VALUES ('{id}', '{user}', '{pas}', 'Student');")
 
-    sql.append(f"INSERT INTO name VALUES ('{n_id}', '{fname}', 'NULL', '{lname}', 'NULL');")
+    sql.append(f"INSERT INTO name VALUES ('{n_id}', '{fname}', '', '{lname}', '');")
 
     ran = randint(0, len(departments) - 1)
     dept = departments[ran]
@@ -115,7 +115,7 @@ for i in range(10):
             user = fname+lname
 
         
-    sql.append(f"INSERT INTO name VALUES ('{n_id}', '{fname}', 'NULL', '{lname}', 'NULL');")
+    sql.append(f"INSERT INTO name VALUES ('{n_id}', '{fname}', '', '{lname}', '');")
 
     ran = randint(0, len(departments) - 1)
     dept = departments[ran]

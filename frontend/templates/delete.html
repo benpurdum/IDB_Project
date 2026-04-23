@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% if show == 'Student' %}
+	<div class ="container">
+		<form action="/deletestudent" method = "POST">
+			<p><h2>Delete a Student:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% elif show == 'Instructor' %}
+	<div class ="container">
+		<form action="/deleteinstructor" method = "POST">
+			<p><h2>Delete an Instructor:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% elif show == 'Dept' %}
+	<div class ="container">
+		<form action="/deletedept" method = "POST">
+			<p><h2>Delete a Department:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Department Name</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Name" name = "name">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% elif show == 'Classroom' %}
+	<div class ="container">
+		<form action="/deleteclassroom" method = "POST">
+			<p><h2>Delete a Classroom:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Room ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% elif show == 'Course' %}
+	<div class ="container">
+		<form action="/deletecourse" method = "POST">
+			<p><h2>Delete a Classroom:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="ID" name = "id">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% elif show == 'Section' %}
+	<div class ="container">
+		<form action="/deletesection" method = "POST">
+			<p><h2>Delete a Section:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Course ID" name = "cid">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Section ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Section ID" name = "sid">
+			</div>
+			<button type="submit" class="btn btn-primary">Delete</button>
+		</form>
+	</div>
+{% endif %}
+{% endblock %}

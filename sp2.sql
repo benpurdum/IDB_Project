@@ -77,7 +77,7 @@ BEGIN
         SET dept_name = pDept_name
         WHERE course.course_id = pc_id;
     END IF;
-    IF pCred IS NOT NULL AND pCred <> '' THEN
+    IF pCred IS NOT NULL AND pCred <> '' AND pCred <> -1 THEN
         UPDATE course
         SET credits = pCred
         WHERE course.course_id = pc_id;
@@ -141,7 +141,7 @@ BEGIN
         SET room_number = pRoom_number
         WHERE classroom.room_id = pRoom_id;
     END IF;
-    IF pCapacity IS NOT NULL AND pCapacity <> '' THEN
+    IF pCapacity IS NOT NULL AND pCapacity <> '' AND pCapacity <> -1 THEN
         UPDATE classroom
         SET capacity = pCapacity
         WHERE classroom.room_id = pRoom_id;
@@ -257,22 +257,22 @@ BEGIN
         SET day = pDay
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pStart_hr IS NOT NULL AND pStart_hr <> '' THEN
+    IF pStart_hr IS NOT NULL AND pStart_hr <> '' AND pStart_hr <> -1 THEN
         UPDATE time_slot
         SET start_hr = pStart_hr
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pStart_min IS NOT NULL AND pStart_min <> '' THEN
+    IF pStart_min IS NOT NULL AND pStart_min <> '' AND pStart_min <> -1 THEN
         UPDATE time_slot
         SET start_min = pStart_min
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pEnd_hr IS NOT NULL AND pEnd_hr <> '' THEN
+    IF pEnd_hr IS NOT NULL AND pEnd_hr <> '' AND pEnd_hr <> -1 THEN
         UPDATE time_slot
         SET end_hr = pEnd_hr
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pEnd_min IS NOT NULL AND pEnd_min <> '' THEN
+    IF pEnd_min IS NOT NULL AND pEnd_min <> '' AND pEnd_min <> -1 THEN
         UPDATE time_slot
         SET end_min = pEnd_min
         WHERE time_slot.time_slot_id = pTime_slot_id;

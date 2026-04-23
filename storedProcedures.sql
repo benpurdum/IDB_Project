@@ -124,12 +124,10 @@ CREATE PROCEDURE deleteInstructor (
     IN pID VARCHAR(5)
 )
 BEGIN
-    DELETE i, n, a, t, d
+    DELETE i, n, a
     FROM instructor i
     INNER JOIN name n ON i.name_id = n.name_id
     INNER JOIN accounts a on i.ID = a.ID
-    INNER JOIN teaches t on i.ID = t.ID
-    INNER JOIN advisor d on i.ID = d.i_ID
     WHERE i.ID = pID;
 END //
 DELIMITER ;
@@ -245,12 +243,10 @@ CREATE PROCEDURE deleteStudent (
     IN pID VARCHAR(5)
 )
 BEGIN
-    DELETE i, n, a, t, d
+    DELETE i, n, a
     FROM student i
     INNER JOIN name n ON i.name_id = n.name_id
     INNER JOIN accounts a on i.ID = a.ID
-    INNER JOIN takes t on i.ID = t.ID
-    INNER JOIN advisor d on i.ID = d.s_ID
     WHERE i.ID = pID;
 END //
 DELIMITER ;
