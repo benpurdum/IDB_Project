@@ -50,16 +50,42 @@ CREATE PROCEDURE updateInstructorName (
     IN pSecondName VARCHAR(20)
 )
 BEGIN
-    UPDATE name
-    SET first_name = pFirstName,
-    	middle_name = pMiddleName,
-    	last_name = pLastName,
-    	second_name = pSecondName
-    WHERE name_id = (
-        SELECT name_id
-        FROM instructor
-        WHERE ID = pID
-    );
+    IF pFirstName IS NOT NULL AND pFirstName <> '' THEN
+        UPDATE name
+        SET first_name = pFirstName
+        WHERE name_id = (
+            SELECT name_id
+            FROM instructor
+            WHERE ID = pID
+        );
+    END IF;
+    IF pMiddleName IS NOT NULL AND pMiddleName <> '' THEN
+        UPDATE name
+        SET middle_name = pMiddleName
+        WHERE name_id = (
+            SELECT name_id
+            FROM instructor
+            WHERE ID = pID
+        );
+    END IF;
+    IF pLastName IS NOT NULL AND pLastName <> '' THEN
+        UPDATE name
+        SET last_name = pLastName
+        WHERE name_id = (
+            SELECT name_id
+            FROM instructor
+            WHERE ID = pID
+        );
+    END IF;
+    IF pSecondName IS NOT NULL AND pSecondName <> ''  THEN
+        UPDATE name
+        SET second_name = pSecondName
+        WHERE name_id = (
+            SELECT name_id
+            FROM instructor
+            WHERE ID = pID
+        );
+    END IF;
 END //
 DELIMITER ;
 
@@ -151,12 +177,48 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE updateStudentName (
     IN pID VARCHAR(5),
-    IN pName VARCHAR(20)
+    IN pFirstName VARCHAR(20),
+    IN pMiddleName VARCHAR(20),
+    IN pLastName VARCHAR(20),
+    IN pSecondName VARCHAR(20)
 )
 BEGIN
-    UPDATE student
-    SET name = pName
-    WHERE student.ID = pID;
+    IF pFirstName IS NOT NULL AND pFirstName <> '' THEN
+        UPDATE name
+        SET first_name = pFirstName
+        WHERE name_id = (
+            SELECT name_id
+            FROM student
+            WHERE ID = pID
+        );
+    END IF;
+    IF pMiddleName IS NOT NULL AND pMiddleName <> '' THEN
+        UPDATE name
+        SET middle_name = pMiddleName
+        WHERE name_id = (
+            SELECT name_id
+            FROM student
+            WHERE ID = pID
+        );
+    END IF;
+    IF pLastName IS NOT NULL AND pLastName <> '' THEN
+        UPDATE name
+        SET last_name = pLastName
+        WHERE name_id = (
+            SELECT name_id
+            FROM student
+            WHERE ID = pID
+        );
+    END IF;
+    IF pSecondName IS NOT NULL AND pSecondName <> ''  THEN
+        UPDATE name
+        SET second_name = pSecondName
+        WHERE name_id = (
+            SELECT name_id
+            FROM student
+            WHERE ID = pID
+        );
+    END IF;
 END //
 DELIMITER ;
 

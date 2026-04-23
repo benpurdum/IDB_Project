@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>Profile Page</h2>
+<div>
+    <p>Your details are below:</p>
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td>{{ session['username'] }}</td>
+        </tr>
+        <tr>
+            <td>Role:</td>
+            <td>{{ session['permission'] }}</td>
+        </tr>
+        <tr>
+            <td>ID:</td>
+            <td>{{ data[0] }}</td>
+        </tr>
+        <tr>
+            <td>First Name:</td>
+            <td>{{ data[1] }}</td>
+        </tr>
+        <tr>
+            <td>Middle Name:</td>
+            <td>{{ data[2] }}</td>
+        </tr>
+        <tr>
+            <td>Last Name:</td>
+            <td>{{ data[3] }}</td>
+        </tr>
+        <tr>
+            <td>Second Name:</td>
+            <td>{{ data[4] }}</td>
+        </tr>
+        <tr>
+            <td>Department:</td>
+            <td>{{ data[5] }}</td>
+        </tr>
+        {% if session['permission'] == 'Instructor' %}
+            <tr>
+                <td>Salary:</td>
+                <td>{{ data[6] }}</td>
+            </tr>
+        {% else %}
+            <p></p>
+        {% endif %}
+        {% if session['permission'] != 'Administrator' %}
+        <tr>
+            <td>Update personal info:</td>
+            <td>(Leave any info not to be updated blank)</td>
+        </tr>
+    </table>
+    <form action="/settings" method="post">
+        <label for="username">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="username" placeholder="Username" id="username">
+        <label for="password">
+            <i class="fas fa-lock"></i>
+        </label>
+        <input type="password" name="password" placeholder="Password" id="password">
+        <br>
+        <p></p>
+        <label for="First Name">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="firstname" placeholder="First Name" id="firstname">
+        <label for="Middle Name">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="middlename" placeholder="Middle Name" id="middlename">
+        <label for="Last Name">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="lastname" placeholder="Last Name" id="lastname">
+        <label for="Second Name">
+            <i class="fas fa-user"></i>
+        </label>
+        <input type="text" name="secondname" placeholder="Second Name" id="secondname">
+        <br>
+        <p></p>
+        <div class="mb-3">
+            <label for="depts">Department:</label>
+            <select name="dept" id="dept">
+                {% for dept in departments %}
+                <option value="{{ dept }}">{{ dept }}</option>
+                {% endfor %}                  
+            </select>
+        </div>
+        <div class="msg">{{ msg }}</div>
+        <input type="submit" value="Submit">
+    </form>
+    {% else %}
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

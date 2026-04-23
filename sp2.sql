@@ -67,17 +67,17 @@ CREATE PROCEDURE updateCourse (
     IN pCred NUMERIC(2,0)
 )
 BEGIN
-    IF pTitle IS NOT NULL THEN
+    IF pTitle IS NOT NULL AND pTitle <> '' THEN
         UPDATE course
         SET title = pTitle
         WHERE course.course_id = pc_id;
     END IF;
-    IF pDept_name IS NOT NULL THEN
+    IF pDept_name IS NOT NULL AND pDept_name <> '' THEN
         UPDATE course
         SET dept_name = pDept_name
         WHERE course.course_id = pc_id;
     END IF;
-    IF pCred IS NOT NULL THEN
+    IF pCred IS NOT NULL AND pCred <> '' THEN
         UPDATE course
         SET credits = pCred
         WHERE course.course_id = pc_id;
@@ -131,17 +131,17 @@ CREATE PROCEDURE updateClassroom (
     IN pCapacity NUMERIC(4,0)
 )
 BEGIN
-    IF pBuilding IS NOT NULL THEN
+    IF pBuilding IS NOT NULL AND pBuilding <> '' THEN
         UPDATE classroom
         SET building = pBuilding
         WHERE classroom.room_id = pRoom_id;
     END IF;
-    IF pRoom_number IS NOT NULL THEN
+    IF pRoom_number IS NOT NULL AND pRoom_number <> '' THEN
         UPDATE classroom
         SET room_number = pRoom_number
         WHERE classroom.room_id = pRoom_id;
     END IF;
-    IF pCapacity IS NOT NULL THEN
+    IF pCapacity IS NOT NULL AND pCapacity <> '' THEN
         UPDATE classroom
         SET capacity = pCapacity
         WHERE classroom.room_id = pRoom_id;
@@ -191,12 +191,12 @@ CREATE PROCEDURE updateDept (
 	IN pBudget numeric(12,2)
 )
 BEGIN
-    IF pBuilding IS NOT NULL THEN
+    IF pBuilding IS NOT NULL AND pBuilding <> '' THEN
         UPDATE department
         SET building = pBuilding
         WHERE department.dept_name = pDept_name;
     END IF;
-    IF pBudget IS NOT NULL THEN
+    IF pBudget IS NOT NULL AND pBudget <> '' THEN
         UPDATE department
         SET budget = pBudget
         WHERE department.dept_name = pDept_name;
@@ -252,27 +252,27 @@ CREATE PROCEDURE updateTimeSlot (
 	IN pEnd_min numeric(2)
 )
 BEGIN
-    IF pDay IS NOT NULL THEN
+    IF pDay IS NOT NULL AND pDay <> '' THEN
         UPDATE time_slot
         SET day = pDay
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pStart_hr IS NOT NULL THEN
+    IF pStart_hr IS NOT NULL AND pStart_hr <> '' THEN
         UPDATE time_slot
         SET start_hr = pStart_hr
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pStart_min IS NOT NULL THEN
+    IF pStart_min IS NOT NULL AND pStart_min <> '' THEN
         UPDATE time_slot
         SET start_min = pStart_min
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pEnd_hr IS NOT NULL THEN
+    IF pEnd_hr IS NOT NULL AND pEnd_hr <> '' THEN
         UPDATE time_slot
         SET end_hr = pEnd_hr
         WHERE time_slot.time_slot_id = pTime_slot_id;
     END IF;
-    IF pEnd_min IS NOT NULL THEN
+    IF pEnd_min IS NOT NULL AND pEnd_min <> '' THEN
         UPDATE time_slot
         SET end_min = pEnd_min
         WHERE time_slot.time_slot_id = pTime_slot_id;
@@ -336,7 +336,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE changePassword (
     IN pID VARCHAR(5),
-    IN pPassword VARCHAR(30)
+    IN pPassword VARCHAR(255)
 )
 BEGIN
     UPDATE accounts
