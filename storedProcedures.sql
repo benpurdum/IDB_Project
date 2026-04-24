@@ -289,25 +289,29 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE updateSectionBuilding (
+    IN pC_id VARCHAR(8),
     IN pSec_id VARCHAR(8),
     IN pBuilding VARCHAR(15)
 )
 BEGIN
     UPDATE section
     SET building = pBuilding
-    WHERE section.sec_id = pSec_id;
+    WHERE section.course_id = pC_id
+    AND section.sec_id = pSec_id;
 END //
 DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE updateSectionRoomID (
+    IN pC_id VARCHAR(8),
     IN pSec_id VARCHAR(8),
     IN pRoom_id VARCHAR(7)
 )
 BEGIN
     UPDATE section
     SET room_id = pRoom_id
-    WHERE section.sec_id = pSec_id;
+    WHERE section.course_id = pC_id
+    AND section.sec_id = pSec_id;
 END //
 DELIMITER ;
 

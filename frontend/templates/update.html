@@ -190,5 +190,58 @@
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 	</div>
+{% elif show == 'TimeSlot' %}
+    <div class ="container">
+		<form action="/updatetimeslot" method = "POST">
+			<p><h2>Update a Time Slot:</h2></p>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Time Slot ID (To search by, cannot be changed)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Time Slot" name = "id">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Day (M/T/W/R/F)</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Day" name = "day">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Start Hr</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Start Hr" name = "starthr">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Start Min</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Start Min" name = "startmin">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">End Hr</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="End Hr" name = "endhr">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">End Min</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="End Min" name = "endmin">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% else %}
+    <div class ="container">
+		<form action="/modifyteacher" method = "POST">
+			<p><h2>Modify a Section Instructor:</h2></p>
+            {% if msg != '' %}
+                <p><h2>{{ msg }}</h2></p>
+            {% endif %}
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Instructor ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Instructor ID" name = "id">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Course ID" name = "cid">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Section ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Section ID" name = "sid">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
 {% endif %}
 {% endblock %}

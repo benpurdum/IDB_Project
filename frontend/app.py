@@ -231,10 +231,17 @@ def updateStudent():
 @app.route('/deletestudent', methods=['GET','POST'])
 def deleteStudent():
     if request.method == 'GET':
-        return render_template('delete.html', show='Student')
+        return render_template('delete.html', show='Student', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cursor = db.cursor()
+        sql = "select * from takes where ID = %s"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a student that is registered to classes."
+            return render_template('delete.html', show='Student', msg=msg)
+
         sql = "call deleteStudent(%s)"
         cursor.execute(sql, (id))
         db.commit()
@@ -349,10 +356,18 @@ def updateInstructor():
 @app.route('/deleteinstructor', methods=['GET','POST'])
 def deleteInstructor():
     if request.method == 'GET':
-        return render_template('delete.html', show='Instructor')
+        return render_template('delete.html', show='Instructor', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cursor = db.cursor()
+
+        sql = "select * from teaches where ID = %s"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete an instructor that is teaching classes."
+            return render_template('delete.html', show='Instructor', msg=msg)
+
         sql = "call deleteInstructor(%s)"
         cursor.execute(sql, (id))
         db.commit()
@@ -418,10 +433,18 @@ def updateDept():
 @app.route('/deletedept', methods=['GET','POST'])
 def deleteDept():
     if request.method == 'GET':
-        return render_template('delete.html', show='Dept')
+        return render_template('delete.html', show='Dept', msg='')
     if request.method == 'POST':
         id = request.form['name']
         cursor = db.cursor()
+
+        sql = "select * from instructor, student where instructor.dept_name = %s or student.dept_name = %s"
+        cursor.execute(sql, (id, id))
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a department with registered members."
+            return render_template('delete.html', show='Dept', msg=msg)
+
         sql = "call deleteDept(%s)"
         cursor.execute(sql, (id))
         db.commit()
@@ -490,11 +513,19 @@ def updateClassroom():
 @app.route('/deleteclassroom', methods=['GET','POST'])
 def deleteClassroom():
     if request.method == 'GET':
-        return render_template('delete.html', show='Classroom')
+        return render_template('delete.html', show='Classroom', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cursor = db.cursor()
         sql = "call deleteClassroom(%s)"
+
+        sql = "select * from section where room_id = %s"
+        cursor.execute(sql, id)
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a room that is in use."
+            return render_template('delete.html', show='Classroom', msg=msg)
+
         cursor.execute(sql, (id))
         db.commit()
         cursor.close()
@@ -582,11 +613,19 @@ def updateCourse():
 @app.route('/deletecourse', methods=['GET','POST'])
 def deleteCourse():
     if request.method == 'GET':
-        return render_template('delete.html', show='Course')
+        return render_template('delete.html', show='Course', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cursor = db.cursor()
         sql = "call deleteCourse(%s)"
+
+        sql = "select * from takes, teaches where takes.course_id = %s or teaches.course_id = %s"
+        cursor.execute(sql, (id, id))
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a course being taught."
+            return render_template('delete.html', show='Course', msg=msg)
+
         cursor.execute(sql, (id))
         db.commit()
         cursor.close()
@@ -652,8 +691,8 @@ def updateSection():
             cursor.execute(sql, (cid,sid,rid))
             db.commit()
 
-        sql = "call findClassroom(%s)"
-        cursor.execute(sql, id)
+        sql = "call findSectionsOfCLass(%s)"
+        cursor.execute(sql, (cid))
         data = cursor.fetchall()
         cursor.close()
         return render_template('show.html', show='Classroom', data=data)
@@ -661,18 +700,53 @@ def updateSection():
 @app.route('/deletesection', methods=['GET','POST'])
 def deleteSection():
     if request.method == 'GET':
-        return render_template('delete.html', show='Section')
+        return render_template('delete.html', show='Section', msg='')
     if request.method == 'POST':
         cid = request.form['cid']
         sid = request.form['sid']
         cursor = db.cursor()
+
+        sql = "select * from takes where takes.course_id = %s and takes.sec_id = %s"
+        cursor.execute(sql, (cid, sid))
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a section being taught."
+            return render_template('delete.html', show='Section', msg=msg)
+        sql = "select * from teaches where teaches.course_id = %s and teaches.sec_id = %s"
+        cursor.execute(sql, (cid, sid))
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a section being taught."
+            return render_template('delete.html', show='Section', msg=msg)
+
         sql = "call deleteSection(%s,%s)"
-        cursor.execute(sql, (cid,sid))
+        cursor.execute(sql, (sid,cid))
         db.commit()
         cursor.close()
         return redirect('/readsection')
 
 @app.route('/addtimeslot', methods=['GET','POST'])
+def addTimeSlot():
+    if request.method == 'GET':
+        return render_template('add.html', show='TimeSlot')
+    if request.method == 'POST':
+        id = request.form['id']
+        day = request.form['day']
+        starthr = request.form['starthr']
+        startmin = request.form['startmin']
+        endhr = request.form['endhr']
+        endmin = request.form['endmin']
+        cursor = db.cursor()
+        sql = "call createTimeSlot(%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql, (id, day, starthr, startmin, endhr, endmin))
+        db.commit()
+
+        sql = "call findTimeSlot(%s)"
+        cursor.execute(sql, (id))
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template('show.html', show='TimeSlot', data=data)
+
 @app.route('/readtimeslot', methods=['GET','POST'])
 def readTimeSlot():
     if request.method == 'GET':
@@ -681,7 +755,7 @@ def readTimeSlot():
         cursor.execute(sql)
         data = cursor.fetchall()
         cursor.close()
-        return render_template('show.html', show='Time Slot', data=data)
+        return render_template('show.html', show='TimeSlot', data=data)
     if request.method == 'POST':
         id = request.form['id']
         cursor = db.cursor()
@@ -689,13 +763,111 @@ def readTimeSlot():
         cursor.execute(sql, id)
         data = cursor.fetchall()
         cursor.close()
-        return render_template('show.html', show='Time Slot', data=data)
+        return render_template('show.html', show='TimeSlot', data=data)
 
 @app.route('/updatetimeslot', methods=['GET','POST'])
+def updateTimeSlot():
+    if request.method == 'GET':
+        return render_template('update.html', show='TimeSlot')
+    if request.method == 'POST':
+        id = request.form['id']
+        day = request.form['day']
+        starthr = request.form['starthr']
+        startmin = request.form['startmin']
+        endhr = request.form['endhr']
+        endmin = request.form['endmin']
+
+        if starthr == '':
+            starthr = -1
+        if startmin == '':
+            startmin = -1
+        if endhr == '':
+            endhr = -1
+        if endmin == '':
+            endmin = -1
+
+        cursor = db.cursor()
+        sql = "call updateTimeSlot(%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql, (id, day, starthr, startmin, endhr, endmin))
+        db.commit()
+
+        sql = "call findTimeSlot(%s)"
+        cursor.execute(sql, (id))
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template('show.html', show='TimeSlot', data=data)
+
 @app.route('/deletetimeslot', methods=['GET','POST'])
+def deleteTimeSlot():
+    if request.method == 'GET':
+        return render_template('delete.html', show='TimeSlot', msg='')
+    if request.method == 'POST':
+        id = request.form['id']
+        cursor = db.cursor()
+        sql = "call deleteTimeSlot(%s)"
+
+        sql = "select * from section where time_slot_id = %s"
+        cursor.execute(sql, (id))
+        data = cursor.fetchall()
+        if data:
+            msg = "Cannot delete a time slot being used."
+            return render_template('delete.html', show='Course', msg=msg)
+
+        cursor.execute(sql, (id))
+        db.commit()
+        cursor.close()
+        return redirect('/readtimeslot')
+
 @app.route('/assignteacher', methods=['GET','POST'])
+def assignTeacher():
+    if request.method == 'GET':
+        return render_template('add.html', show='Teacher', msg='')
+    if request.method == 'POST':
+        id = request.form['id']
+        cid = request.form['cid']
+        sid = request.form['sid']
+        semester = request.form['year']
+        year = request.form['year']
+        cursor = db.cursor()
+        sql = "call assignInstructor(%s,%s,%s,%s,%s)"
+        cursor.execute(sql, (id, cid, sid, semester, year))
+        db.commit()
+        return render_template('add.html', show='Teacher', msg="Success!")
+
 @app.route('/modifyteacher', methods=['GET','POST'])
+def modifyTeacher():
+    if request.method == 'GET':
+        return render_template('add.html', show='Teacher', msg='')
+    if request.method == 'POST':
+        id = request.form['id']
+        cid = request.form['cid']
+        sid = request.form['sid']
+        cursor = db.cursor()
+        sql = "call modifyInstructor(%s,%s,%s)"
+        cursor.execute(sql, (id, cid, sid))
+        db.commit()
+        return render_template('add.html', show='Teacher', msg="Success!")
+
 @app.route('/removeteacher', methods=['GET','POST'])
+def removeTeacher():
+    if request.method == 'GET':
+        return render_template('add.html', show='Teacher', msg='')
+    if request.method == 'POST':
+        id = request.form['id']
+        cid = request.form['cid']
+        sid = request.form['sid']
+        cursor = db.cursor()
+        sql = "call removeInstructor(%s,%s,%s)"
+        cursor.execute(sql, (id, cid, sid))
+        db.commit()
+        return render_template('add.html', show='Teacher', msg="Success!")
+
+#EXTRA STUFF I NEED
+#average grade of all students by dept
+#average grade of a class by semester range
+#best and worst performing classes (on average grade) by semester
+#total students by dept
+#total current students by dept
 
 #instructor stuff
 @app.route('/submitgrades')
