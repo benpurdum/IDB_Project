@@ -870,17 +870,118 @@ def removeTeacher():
 #total current students by dept
 
 #instructor stuff
-@app.route('/submitgrades')
-@app.route('/changegrades')
-@app.route('/addstudentadvisor')
-@app.route('/removestudentadvisor')
-@app.route('/checkroster')
-@app.route('/checksemesterroster')
-@app.route('/removestudentfromsection')
-@app.route('/addprereq')
-@app.route('/modifyprereq')
+@app.route('/submitgrades', methods=['GET','POST'])
+def submitGrades():
+        cursor = db.cursor()
+
+        input_studentid = request.form.get('student_id')
+        input_courseid = request.form.get('course_id')
+        input_secid = request.form.get('sec_id')
+        input_semester = request.form.get('semester')
+        input_year = request.form.get('year')
+        input_grade = request.form.get('grade')
+
+    
+        cursor.execute('CALL gradeSection(%s, %s, %s, %s, %s, %s)', (input_studentid, input_courseid, input_secid, input_semester, input_year, input_grade))
+        db.commit()
+        cursor.close()
+
+        return render_template('submitgrades.html')
+
+
+@app.route('/addstudentadvisor', methods=['GET','POST'])
+def addStudentAdvisor():
+
+    if request.method == 'POST':
+
+        cursor = db.cursor()
+        input_studentid = request.form.get('student_id')
+        input_instructorid = request.form.get('instructor_id')
+
+        cursor.execute('CALL addAdvisor(%s, %s)', (input_studentid, input_instructorid))
+        db.commit()
+        cursor.close()
+
+        return render_template('addadvisor.html')
+
+    return render_template('addadvisor.html')
+
+@app.route('/removestudentadvisor', methods=['GET','POST'])
+def removeStudentAdvisor():
+
+    if request.method == 'POST':
+
+        cursor = db.cursor()
+        input_studentid = request.form.get('student_id')
+        input_instructorid = request.form.get('instructor_id')
+
+        cursor.execute('CALL removeAdvisor(%s, %s)', (input_studentid, input_instructorid))
+        db.commit()
+        cursor.close()
+
+        return render_template('removeadvisor.html')
+
+    return render_template('removeadvisor.html')
+
+
+@app.route('/checkroster', methods=['GET','POST'])
+def checkroster():
+    if request.method == 'GET':
+        return render_template('checkroster.html')
+
+    instructor_id = request.form['instructor_id']
+    course_id = request.form['course_id']
+    section_id = request.form['section_id']
+
+    cursor = db.cursor()
+    cursor.execute('CALL checkSectionRoster(%s, %s, %s)', (instructor_id, course_id, section_id))
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    return render_template('resultscheckroster.html', data=data)
+
+#@app.route('/checksemesterroster')
+#@app.route('/removestudentfromsection')
+
+@app.route('/addprereq', methods=['GET', 'POST'])
+def addprereq():
+    if request.method == 'GET':
+        return render_template('addprereq.html')
+
+    course_id = request.form['course_id']
+    
+    prereq_id = request.form['prereq_id']
+
+    cursor = db.cursor()
+    cursor.execute('CALL addPrereq(%s, %s)', (course_id, prereq_id))
+    db.commit()
+    cursor.close()
+
+    return render_template('addprereq.html')
+
+
+#@app.route('/modifyprereq')
+
+@app.route('/removeprereq')
+def removeprereq():
+    if request.method == 'GET':
+        return render_template('removeprereq.html')
+
+    course_id = request.form['course_id']
+    
+    prereq_id = request.form['prereq_id']
+
+    cursor = db.cursor()
+    cursor.execute('CALL removePrereq(%s, %s)', (course_id, prereq_id))
+    db.commit()
+    cursor.close()
+
+    return render_template('removeprereq.html')
+
 
 #student stuff
-@app.route('/registerclass')
-@app.route('/sectioninfo')
-@app.route('/advisorinfo')
+#@app.route('/registerclass')
+#@app.route('/sectioninfo')
+#@app.route('/advisorinfo')
+
