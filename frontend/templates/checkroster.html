@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="title">
+    <h1>Check Roster</h1>
+</div>
+
+<div class="container">
+
+    <form action="/checkroster" method="POST">
+
+
+        <p><label>Instructor ID:</label><input type="text" name="instructor_id" /></p>
+
+        <p><label>Course ID:</label><input type="text" name="course_id" /></p>
+
+        <p><label>Section ID:</label><input type="text" name="section_id" /></p>
+
+        <p><input type="submit" value="Submit" /></p>
+    </form>
+</div>
+
+{% endblock %}

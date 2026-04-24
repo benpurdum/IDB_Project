@@ -41,22 +41,14 @@
                                     <a class="nav-link" aria-current="page" href="">Advisor Info</a>
                                 </li>
                             {% elif session['permission'] == 'Instructor' %}
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Grades
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Submit</a></li>
-                                        <li><a class="dropdown-item" href="">Change</a></li>
-                                    </ul>
-                                </li>
+                                        <li><a class="dropdown-item" href="/submitgrades">Grades</a></li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Advisor
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Add Student</a></li>
-                                        <li><a class="dropdown-item" href="">Remove Student</a></li>
+                                        <li><a class="dropdown-item" href="/addstudentadvisor">Add Student</a></li>
+                                        <li><a class="dropdown-item" href="/removestudentadvisor">Remove Student</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -64,7 +56,7 @@
                                         Sections
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Check Roster</a></li>
+                                        <li><a class="dropdown-item" href="/checkroster">Check Roster</a></li>
                                         <li><a class="dropdown-item" href="">Check by Semester</a></li>
                                         <li><a class="dropdown-item" href="">Remove a Student</a></li>
                                     </ul>
@@ -74,8 +66,8 @@
                                         Prereqs
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Add</a></li>
-                                        <li><a class="dropdown-item" href="">Modify</a></li>
+                                        <li><a class="dropdown-item" href="/addprereq">Add</a></li>
+                                        <li><a class="dropdown-item" href="/removeprereq">Remove</a></li>
                                     </ul>
                                 </li>
                             {% else %}
