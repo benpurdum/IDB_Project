@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="title">
+    <h1>Section Info</h1>
+</div>
+
+<div class="container">
+
+    <form action="/sectioninfo" method="POST">
+
+        <p><label>Course ID:</label>
+        <input type="text" name="course_id" /></p>
+
+        <p><label>Section ID:</label>
+        <input type="text" name="section_id" /></p>
+
+        <p><label>Semester:</label>
+        <select name="semester">
+            <option value="">Select</option>
+            <option value="Winter">Winter</option>
+            <option value="Fall">Fall</option>
+            <option value="Spring">Spring</option>
+            <option value="Summer">Summer</option>
+        </select></p>
+
+        <p><label>Year:</label>
+        <input type="text" name="year" /></p>
+
+        <p><input type="submit" value="Submit" /></p>
+
+    </form>
+
+</div>
+
+{% endblock %}

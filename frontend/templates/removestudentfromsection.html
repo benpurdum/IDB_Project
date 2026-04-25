@@ -1,21 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="title"><h1>Submit/Change Grades</h1></div>
+<div class="title">
+    <h1>Remove Student From Section</h1>
+</div>
 
 <div class="container">
 
-    <form action="/submitgrades" method="POST">
+    <form action="/removestudentfromsection" method="POST">
 
+        <p><label>Student ID:</label>
+        <input type="text" name="student_id" /></p>
 
-        <p><label>Student ID:</label><input type="text" name="student_id" /></p>
+        <p><label>Course ID:</label>
+        <input type="text" name="course_id" /></p>
 
-        <p><label>Course ID:</label><input type="text" name="course_id" /></p>
+        <p><label>Section ID:</label>
+        <input type="text" name="section_id" /></p>
 
-        <p><label>Section ID:</label><input type="text" name="sec_id" /></p>
-
-        <p><label>Semester:</label>
-        
        <select name="semester">
         <option value="">Select</option>
         <option value="Winter">Winter</option>
@@ -26,10 +28,11 @@
 
         <p><label>Year:</label><input type="number" name="year" /></p>
 
-        <p><label>Grade:</label><input type="text" name="grade" /></p>
 
         <p><input type="submit" value="Submit" /></p>
+
     </form>
 </div>
+
 
 {% endblock %}

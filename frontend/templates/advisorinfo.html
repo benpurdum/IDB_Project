@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="title"><h1>Advisor Info</h1></div>
+
+<div class="container">
+
+{% if data|length > 0 %}
+
+    <table cellpadding="5" cellspacing="5" class="table table-hover">
+        <tr>
+            <th>Instructor ID</th>
+            <th>First Name</th>
+            <th>Middle Name</th>
+            <th>Last Name</th>
+            <th>Second Name</th>
+            <th>Department</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            {% for d in row %}
+                <td>{{ d }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <h3>No advisor assigned yet.</h3>
+{% endif %}
+</div>
+
+{% endblock %}

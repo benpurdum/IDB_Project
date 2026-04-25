@@ -28,17 +28,17 @@
                                         Classes
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Register</a></li>
-                                        <li><a class="dropdown-item" href="">Drop</a></li>
-                                        <li><a class="dropdown-item" href="">Final Grades</a></li>
-                                        <li><a class="dropdown-item" href="">Check by Semester</a></li>
+                                        <li><a class="dropdown-item" href="/registerclass">Register</a></li>
+                                        <li><a class="dropdown-item" href="/dropsection">Drop</a></li>
+                                        <li><a class="dropdown-item" href="/finalgrades">Final Grades</a></li>
+                                        <li><a class="dropdown-item" href="/checkbysemester">Check by Semester</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="">Section Info</a>
+                                    <a class="nav-link" aria-current="page" href="/sectioninfo">Section Info</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="">Advisor Info</a>
+                                    <a class="nav-link" aria-current="page" href="/advisorinfo">Advisor Info</a>
                                 </li>
                             {% elif session['permission'] == 'Instructor' %}
                                         <li><a class="dropdown-item" href="/submitgrades">Grades</a></li>
@@ -57,8 +57,8 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="/checkroster">Check Roster</a></li>
-                                        <li><a class="dropdown-item" href="">Check by Semester</a></li>
-                                        <li><a class="dropdown-item" href="">Remove a Student</a></li>
+                                        <li><a class="dropdown-item" href="/checksemesterroster">Check by Semester</a></li>
+                                        <li><a class="dropdown-item" href="/removestudentfromsection">Remove a Student</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">

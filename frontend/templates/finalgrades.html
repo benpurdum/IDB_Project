@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="title"><h1>Final Grades</h1></div>
+
+<div class="container">
+
+{% if data|length > 0 %}
+    <table cellpadding="5" cellspacing="5" class="table table-hover">
+        <tr>
+            <th>Course ID</th>
+            <th>Section ID</th>
+            <th>Semester</th>
+            <th>Year</th>
+            <th>Grade</th>
+        </tr>
+
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+    </tr>
+    {% endfor %}
+
+    </table>
+
+{% else %}
+    <div class="container"><h1>No grades found</h1></div>
+{% endif %}
+
+</div>
+
+{% endblock %}

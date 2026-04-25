@@ -1,26 +1,26 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="container"><h1>Section Roster</h1></div>
+<div class="container">
+    <h1>Semester Roster</h1>
+</div>
 
 <div class="container">
 
 {% if data|length > 0 %}
     <table cellpadding="5" cellspacing="5" class="table table-hover">
         <tr>
-            <th>ID</th>
-            <th>First</th>
-            <th>Middle</th>
-            <th>Last</th>
-            <th>Second</th>
+            <th>Course ID</th>
+            <th>Section ID</th>
         </tr>
 
     {% for row in data %}
+
     <tr>
-        {% for d in row %}
-            <td>{{ d }}</td>
-        {% endfor %}
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
     </tr>
+
     {% endfor %}
 
     </table>
