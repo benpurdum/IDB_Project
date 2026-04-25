@@ -826,18 +826,29 @@ def assignTeacher():
         id = request.form['id']
         cid = request.form['cid']
         sid = request.form['sid']
-        semester = request.form['year']
-        year = request.form['year']
+        semester = request.form['semester']
+        year = int(request.form['year'])
         cursor = db.cursor()
-        sql = "call assignInstructor(%s,%s,%s,%s,%s)"
-        cursor.execute(sql, (id, cid, sid, semester, year))
-        db.commit()
-        return render_template('add.html', show='Teacher', msg="Success!")
+
+        sql = "call findSectionsOfClass(%s)"
+        cursor.execute(sql, cid)
+        data = cursor.fetchall()
+        querygood = False
+        for i in data:
+            if i[0] == cid and i[1] == sid and i[2] == semester and i[3] == year:
+                querygood = True
+        
+        if querygood:
+            sql = "call assignInstructor(%s,%s,%s,%s,%s)"
+            cursor.execute(sql, (id, cid, sid, semester, year))
+            db.commit()
+            return render_template('add.html', show='Teacher', msg="Success!")
+        return render_template('add.html', show='Teacher', msg="Assignment Failed.")
 
 @app.route('/modifyteacher', methods=['GET','POST'])
 def modifyTeacher():
     if request.method == 'GET':
-        return render_template('add.html', show='Teacher', msg='')
+        return render_template('update.html', show='Teacher', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cid = request.form['cid']
@@ -846,12 +857,12 @@ def modifyTeacher():
         sql = "call modifyTeacher(%s,%s,%s)"
         cursor.execute(sql, (id, cid, sid))
         db.commit()
-        return render_template('add.html', show='Teacher', msg="Success!")
+        return render_template('update.html', show='Teacher', msg="Success!")
 
 @app.route('/removeteacher', methods=['GET','POST'])
 def removeTeacher():
     if request.method == 'GET':
-        return render_template('add.html', show='Teacher', msg='')
+        return render_template('delete.html', show='Teacher', msg='')
     if request.method == 'POST':
         id = request.form['id']
         cid = request.form['cid']
@@ -860,14 +871,302 @@ def removeTeacher():
         sql = "call removeTeacher(%s,%s,%s)"
         cursor.execute(sql, (id, cid, sid))
         db.commit()
-        return render_template('add.html', show='Teacher', msg="Success!")
+        return render_template('delete.html', show='Teacher', msg="Success!")
 
 #EXTRA STUFF I NEED
 #average grade of all students by dept
+@app.route('/averagegradedept', methods=['GET','POST'])
+def averageGradeDept():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllDepts()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        depts = []
+        for i in data:
+            depts.append(i[0])
+        cursor.close()
+        return render_template('average.html', show='GetDept', depts=depts)
+    if request.method == 'POST':
+        dept = request.form['dept']
+        cursor = db.cursor()
+        sql = "select * from student, takes where student.id = takes.id and student.dept_name = %s;"
+        cursor.execute(sql, dept)
+        data = cursor.fetchall()
+        cursor.close()
+        if not data:
+            return render_template('average.html', show='NoData')
+        #f d- d d+ c- c c+ b- b b+ a- a
+        #1 2  3 4  5  6 7  8  9 10 11 12
+        grades = []
+        for i in data:
+            match i[8]:
+                case 'F':
+                    grades.append(1)
+                case 'D-':
+                    grades.append(2)
+                case 'D':
+                    grades.append(3)
+                case 'D+':
+                    grades.append(4)
+                case 'C-':
+                    grades.append(5)
+                case 'C':
+                    grades.append(6)
+                case 'C+':
+                    grades.append(7)
+                case 'B-':
+                    grades.append(8)
+                case 'B':
+                    grades.append(9)
+                case 'B+':
+                    grades.append(10)
+                case 'A-':
+                    grades.append(11)
+                case 'A':
+                    grades.append(12)
+                case 'A+':
+                    grades.append(13)
+        sum = 0
+        for i in grades:
+            sum += i
+        avg = int(sum / len(grades))
+        match avg:
+            case 1:
+                grade = 'F'
+            case 2:
+                grade = 'D-'
+            case 3:
+                grade = 'D'
+            case 4:
+                grade = 'D+'
+            case 5:
+                grade = 'C-'
+            case 6:
+                grade = 'C'
+            case 7:
+                grade = 'C+'
+            case 8:
+                grade = 'B-'
+            case 9:
+                grade = 'B'
+            case 10:
+                grade = 'B+'
+            case 11:
+                grade = 'A-'
+            case 12:
+                grade = 'A'
+            case 13:
+                grade = 'A+'
+        return render_template('average.html', show='ShowDept', dept=dept, grade=grade)
+
+
 #average grade of a class by semester range
+@app.route('/averagegradeclasssem', methods=['GET','POST'])
+def averageGradeClassSem():
+    if request.method == 'GET':
+        return render_template('average.html', show='GetSem')
+    if request.method == 'POST':
+        cid = request.form['cid']
+        bsem = request.form['bsem']
+        byear = request.form['byear']
+        esem = request.form['esem']
+        eyear = request.form['eyear']
+
+        cursor = db.cursor()
+        sql = "select * from takes where takes.course_id=%s and takes.year>=%s and takes.year<=%s;"
+        cursor.execute(sql, (cid,byear,eyear))
+        data = cursor.fetchall()
+        cursor.close()
+        if not data:
+            return render_template('average.html', show='NoData')
+
+        grades = []
+        for i in data:
+            match i[5]:
+                case 'F':
+                    grades.append(1)
+                case 'D-':
+                    grades.append(2)
+                case 'D':
+                    grades.append(3)
+                case 'D+':
+                    grades.append(4)
+                case 'C-':
+                    grades.append(5)
+                case 'C':
+                    grades.append(6)
+                case 'C+':
+                    grades.append(7)
+                case 'B-':
+                    grades.append(8)
+                case 'B':
+                    grades.append(9)
+                case 'B+':
+                    grades.append(10)
+                case 'A-':
+                    grades.append(11)
+                case 'A':
+                    grades.append(12)
+                case 'A+':
+                    grades.append(13)
+        sum = 0
+        for i in grades:
+            sum += i
+        avg = int(sum / len(grades))
+        match avg:
+            case 1:
+                grade = 'F'
+            case 2:
+                grade = 'D-'
+            case 3:
+                grade = 'D'
+            case 4:
+                grade = 'D+'
+            case 5:
+                grade = 'C-'
+            case 6:
+                grade = 'C'
+            case 7:
+                grade = 'C+'
+            case 8:
+                grade = 'B-'
+            case 9:
+                grade = 'B'
+            case 10:
+                grade = 'B+'
+            case 11:
+                grade = 'A-'
+            case 12:
+                grade = 'A'
+            case 13:
+                grade = 'A+'
+        return render_template('average.html', show='ShowSem', grade=grade, cid=cid, bsem=bsem, byear=byear, esem=esem, eyear=eyear)
+
 #best and worst performing classes (on average grade) by semester
+@app.route('/bestworstclasssem', methods=['GET','POST'])
+def bestWorstClassSem():
+    if request.method == 'GET':
+        return render_template('average.html', show="GetBestWorst")
+    if request.method == 'POST':
+        sem = request.form['sem']
+        year = request.form['year']
+        cursor = db.cursor()
+        sql = "select * from takes where semester=%s and year=%s"
+        cursor.execute(sql,(sem,year))
+        data = cursor.fetchall()
+        cursor.close()
+        if not data:
+            return render_template('average.html', show='NoData')
+
+        courses = []
+        for i in data:
+            temp = 0
+            match i[5]:
+                case 'F':
+                    temp = 1
+                case 'D-':
+                    temp = 2
+                case 'D':
+                    temp = 3
+                case 'D+':
+                    temp = 4
+                case 'C-':
+                    temp = 5
+                case 'C':
+                    temp = 6
+                case 'C+':
+                    temp = 7
+                case 'B-':
+                    temp = 8
+                case 'B':
+                    temp = 9
+                case 'B+':
+                    temp = 10
+                case 'A-':
+                    temp = 11
+                case 'A':
+                    temp = 12
+                case 'A+':
+                    temp = 13
+            courses.append([i[1],temp])
+        
+        totals = {}
+        counts = {}
+
+        for course, grade in courses:
+            if course not in totals:
+                totals[course] = 0
+                counts[course] = 0
+            
+            totals[course] += grade
+            counts[course] += 1
+
+        averages = {}
+        for course in totals:
+            averages[course] = totals[course] / counts[course]
+
+        bcid = ""
+        wcid = ""
+        btemp = 0
+        wtemp = 13
+        for course, avg in averages.items():
+            if avg > btemp:
+                btemp = avg
+                bcid = course
+                print("b",bcid,avg)
+            if avg < wtemp:
+                wtemp = avg
+                wcid = course
+                print("w",wcid,avg)
+
+        return render_template('average.html', show='ShowBestWorst', bcid=bcid, wcid=wcid)
+
 #total students by dept
+@app.route('/totalstudentsdept', methods=['GET','POST'])
+def totalStudentsDept():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllDepts()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        depts = []
+        for i in data:
+            depts.append(i[0])
+        cursor.close()
+        return render_template('average.html', show='GetStudentDept', depts=depts)
+    if request.method == 'POST':
+        dept = request.form['dept']
+        cursor = db.cursor()
+        sql = "select * from student where dept_name=%s"
+        cursor.execute(sql, dept)
+        data = cursor.fetchall()
+        count = len(data)
+        cursor.close()
+        return render_template('average.html', show='ShowStudentDept', count=count, dept=dept)
+
 #total current students by dept
+@app.route('/currentstudentsdept', methods=['GET','POST'])
+def currentStudentsDept():
+    if request.method == 'GET':
+        cursor = db.cursor()
+        sql = "call getAllDepts()"
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        depts = []
+        for i in data:
+            depts.append(i[0])
+        cursor.close()
+        return render_template('average.html', show='GetCurrentDept', depts=depts)
+    if request.method == 'POST':
+        dept = request.form['dept']
+        cursor = db.cursor()
+        sql = "select * from student, takes where student.ID = takes.ID and student.dept_name=%s and takes.semester='Spring' and takes.year=2026"
+        cursor.execute(sql, dept)
+        data = cursor.fetchall()
+        count = len(data)
+        cursor.close()
+        return render_template('average.html', show='ShowCurrentDept', count=count, dept=dept)
 
 #instructor stuff
 @app.route('/submitgrades', methods=['GET','POST'])

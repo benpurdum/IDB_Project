@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% if show == 'GetDept' %}
+	<div class ="container">
+		<form action="/averagegradedept" method = "POST">
+			<p><h2>Get average grades by department:</h2></p>
+            <div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'ShowDept' %}
+    <div class ="container">
+        <p><h2>The average grade for the {{ dept }} department is:</h2></p>
+        <p><h2>{{ grade }}</h2></p>
+	</div>
+{% elif show == 'GetSem' %}
+	<div class ="container">
+		<form action="/averagegradeclasssem" method = "POST">
+			<p><h2>Get average class grades by semester range:</h2></p>
+                <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Course ID</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Course ID" name = "cid">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Beginning Semester</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Beginning Semester" name = "bsem">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Beginning Year</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Beginning Year" name = "byear">
+			</div>
+            <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Ending Semester</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Ending Semester" name = "esem">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Ending Year</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Ending Year" name = "eyear">
+            </div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'ShowSem' %}
+	<div class ="container">
+        <p><h2>The average grade for {{ cid }} across {{ bsem }} {{ byear }} to {{ esem }} {{ eyear }} is:</h2></p>
+        <p><h2>{{ grade }}</h2></p>
+	</div>
+{% elif show == 'GetBestWorst' %}
+    <div class ="container">
+		<form action="/bestworstclasssem" method = "POST">
+            <p><h2>Get the best and worst performing classes by semester:</h2></p>
+                <div class="mb-3">
+				<label for="formGroupExampleInput2" class="form-label">Semester</label>
+				<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Semester" name = "sem">
+			</div>
+			<div class="mb-3">
+				<label for="formGroupExampleInput" class="form-label">Year</label>
+				<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Year" name = "year">
+			</div>
+            </div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'ShowBestWorst' %}
+	<div class ="container">
+        <p><h2>The best performing class is {{ bcid }}, and the worst performing class is {{ wcid }}.</h2></p>
+	</div>
+{% elif show == 'GetStudentDept' %}
+    <div class ="container">
+		<form action="/totalstudentsdept" method = "POST">
+			<p><h2>Get total number of students by department:</h2></p>
+            <div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'ShowStudentDept' %}
+	<div class ="container">
+        <p><h2>There are {{ count }} student(s) in the {{ dept }} department.</h2></p>
+	</div>
+{% elif show == 'GetCurrentDept' %}
+    <div class ="container">
+		<form action="/currentstudentsdept" method = "POST">
+			<p><h2>Get current number of students by department:</h2></p>
+            <div class="mb-3">
+				<label for="depts">Choose a Department:</label>
+
+                <select name="dept" id="dept">
+                    {% for dept in depts %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}                  
+                </select>
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+{% elif show == 'ShowCurrentDept' %}
+	<div class ="container">
+        <p><h2>There are currently {{ count }} student(s) in the {{ dept }} department.</h2></p>
+	</div>
+{% else %}
+    <div class ="container">
+        <p><h2>No data to show.</h2></p>
+	</div>
+{% endif %}
+{% endblock %}
