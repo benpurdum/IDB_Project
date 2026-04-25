@@ -1195,7 +1195,7 @@ def addStudentAdvisor():
 
         cursor = db.cursor()
         input_studentid = request.form.get('student_id')
-        input_instructorid = request.form.get('instructor_id')
+        input_instructorid = session['id']
 
         cursor.execute('CALL addAdvisor(%s, %s)', (input_studentid, input_instructorid))
         db.commit()
@@ -1212,7 +1212,7 @@ def removeStudentAdvisor():
 
         cursor = db.cursor()
         input_studentid = request.form.get('student_id')
-        input_instructorid = request.form.get('instructor_id')
+        input_instructorid = session['id']
 
         cursor.execute('CALL removeAdvisor(%s, %s)', (input_studentid, input_instructorid))
         db.commit()
@@ -1228,20 +1228,59 @@ def checkroster():
     if request.method == 'GET':
         return render_template('checkroster.html')
 
-    instructor_id = request.form['instructor_id']
+    instructor_id = session['id']
     course_id = request.form['course_id']
     section_id = request.form['section_id']
+    semester = request.form['semester']
+    year = request.form['year']
 
     cursor = db.cursor()
-    cursor.execute('CALL checkSectionRoster(%s, %s, %s)', (instructor_id, course_id, section_id))
+    cursor.execute('CALL checkSectionRoster(%s, %s, %s, %s, %s)', (instructor_id, course_id, section_id, semester, year))
 
     data = cursor.fetchall()
     cursor.close()
 
     return render_template('resultscheckroster.html', data=data)
 
-#@app.route('/checksemesterroster')
-#@app.route('/removestudentfromsection')
+@app.route('/checksemesterroster', methods=['GET','POST'])
+def checkSemesterRoster():
+    if request.method == 'GET':
+        return render_template('checksemesterroster.html')
+
+    instructor_id = session['id']
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+    cursor.execute('CALL checkRoster(%s, %s, %s)', (instructor_id, semester, year))
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    return render_template('checksemesterrosterresults.html', data=data)
+
+@app.route('/removestudentfromsection', methods=['GET','POST'])
+def removeStudentFromSection():
+    if request.method == 'GET':
+        return render_template('removestudentfromsection.html')
+
+    student_id = request.form['student_id']
+    course_id = request.form['course_id']
+    section_id = request.form['section_id']
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+
+    sql = "DELETE FROM takes WHERE ID = %s AND course_id = %s AND sec_id = %s AND semester = %s AND year = %s"
+    cursor.execute(sql, (student_id, course_id, section_id, semester, year))
+    
+    db.commit()
+
+
+    cursor.close()
+
+    return render_template('removestudentfromsection.html')
 
 @app.route('/addprereq', methods=['GET', 'POST'])
 def addprereq():
@@ -1260,7 +1299,6 @@ def addprereq():
     return render_template('addprereq.html')
 
 
-#@app.route('/modifyprereq')
 
 @app.route('/removeprereq')
 def removeprereq():
@@ -1268,19 +1306,125 @@ def removeprereq():
         return render_template('removeprereq.html')
 
     course_id = request.form['course_id']
-    
     prereq_id = request.form['prereq_id']
 
     cursor = db.cursor()
     cursor.execute('CALL removePrereq(%s, %s)', (course_id, prereq_id))
+   
     db.commit()
+
     cursor.close()
 
     return render_template('removeprereq.html')
 
 
 #student stuff
-#@app.route('/registerclass')
-#@app.route('/sectioninfo')
-#@app.route('/advisorinfo')
+@app.route('/registerclass', methods=['GET','POST'])
+def registerClass():
+
+    if request.method == 'GET':
+        return render_template('registerclass.html')
+
+    student_id = session['id'] 
+    course_id = request.form['course_id']
+    section_id = request.form['section_id']
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+
+    cursor.execute('CALL classEnroll(%s, %s, %s, %s, %s)', (student_id, course_id, section_id, semester, year))
+    db.commit()
+
+    cursor.close()
+
+    return render_template('registerclass.html')
+
+@app.route('/dropsection', methods=['GET','POST'])
+def dropSection():
+
+    if request.method == 'GET':
+        return render_template('dropsection.html')
+
+    student_id = session['id'] 
+    course_id = request.form['course_id']
+    section_id = request.form['section_id']
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+
+    cursor.execute('CALL dropSection(%s, %s, %s, %s, %s)', (student_id, course_id, section_id, semester, year))
+    db.commit()
+    cursor.close()
+
+    return render_template('dropsection.html')
+
+@app.route('/finalgrades')
+def finalGrades():
+
+    student_id = session['id']
+
+    cursor = db.cursor()
+
+    sql = "SELECT course_id, sec_id, semester, year, grade FROM takes WHERE ID = %s"
+    cursor.execute(sql, (student_id,))
+    data = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('finalgrades.html', data=data)
+
+@app.route('/checkbysemester', methods=['GET','POST'])
+def checkBySemester():
+
+    if request.method == 'GET':
+        return render_template('checkbysemester.html')
+
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+    sql = "SELECT course_id, sec_id, semester, year FROM section WHERE semester = %s AND year = %s"
+    cursor.execute(sql, (semester, year))
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    return render_template('checkbysemesterresults.html', data=data, semester=semester, year=year)
+
+@app.route('/sectioninfo', methods=['GET', 'POST'])
+def sectionInfo():
+
+    if request.method == 'GET':
+        return render_template('sectioninfo.html')
+
+    course_id = request.form['course_id']
+    section_id = request.form['section_id']
+    semester = request.form['semester']
+    year = request.form['year']
+
+    cursor = db.cursor()
+
+    cursor.execute('CALL sectionInfo(%s, %s, %s, %s)',(course_id, section_id, semester, year))
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    return render_template('sectioninforesults.html', data=data, course_id=course_id, section_id=section_id, semester=semester, year=year)
+
+@app.route('/advisorinfo', methods=['GET'])
+def advisorInfo():
+
+    student_id = session['id']
+    cursor = db.cursor()
+
+    cursor.execute('CALL checkAdvisor(%s)', (student_id))
+    data = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('advisorinfo.html', data=data)
+
+
 
