@@ -843,7 +843,7 @@ def modifyTeacher():
         cid = request.form['cid']
         sid = request.form['sid']
         cursor = db.cursor()
-        sql = "call modifyInstructor(%s,%s,%s)"
+        sql = "call modifyTeacher(%s,%s,%s)"
         cursor.execute(sql, (id, cid, sid))
         db.commit()
         return render_template('add.html', show='Teacher', msg="Success!")
@@ -857,7 +857,7 @@ def removeTeacher():
         cid = request.form['cid']
         sid = request.form['sid']
         cursor = db.cursor()
-        sql = "call removeInstructor(%s,%s,%s)"
+        sql = "call removeTeacher(%s,%s,%s)"
         cursor.execute(sql, (id, cid, sid))
         db.commit()
         return render_template('add.html', show='Teacher', msg="Success!")
