@@ -65,6 +65,8 @@ def logout():
 
 @app.route('/settings', methods=['GET','POST'])
 def settings():
+    if 'loggedin' not in session:
+        return redirect('/login')
     cursor = db.cursor()
     sql = "call getAllDepts()"
     cursor.execute(sql)
@@ -102,6 +104,10 @@ def settings():
                 sql = "call updateStudentDept(%s,%s)"
                 cursor.execute(sql, (session['id'], department))
                 db.commit()
+            elif session['permission'] == "Administrator":
+                sql = "call updateAdminDept(%s,%s)"
+                cursor.execute(sql, (session['id'], department))
+                db.commit()
         if firstname or middlename or lastname or secondname:
             if session['permission'] == "Instructor":
                 sql = "call updateInstructorName(%s,%s,%s,%s,%s)"
@@ -111,19 +117,27 @@ def settings():
                 sql = "call updateStudentName(%s,%s,%s,%s,%s)"
                 cursor.execute(sql, (session['id'], firstname, middlename, lastname, secondname))
                 db.commit()
+            elif session['permission'] == "Administrator":
+                sql = "call updateAdminName(%s,%s,%s,%s,%s)"
+                cursor.execute(sql, (session['id'], firstname, middlename, lastname, secondname))
+                db.commit()
 
     if session['permission'] == "Student":
         sql = "call findStudent(%s)"
         cursor.execute(sql, session['id'])
         account = cursor.fetchone()
-        data = [account[0], account[4], account[5], account[6], account[7], account[2]]
+        data = [account[0], account[1], account[2], account[3], account[4], account[5]]
     elif session['permission'] == "Instructor":
         sql = "call findInstructor(%s)"
         cursor.execute(sql, session['id'])
         account = cursor.fetchone()
-        data = [account[0], account[5], account[6], account[7], account[8], account[2], account[3]]
+        data = [account[0], account[1], account[2], account[3], account[4], account[5], account[6]]
     else:
-        data = [session['id'], 'admin', 'admin', 'admin', 'admin', 'admin']
+        sql = "select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name from admin s inner join name n on s.name_id = n.name_id where s.ID = %s;"
+        cursor.execute(sql, session['id'])
+        account = cursor.fetchone()
+        print(account)
+        data = [account[0], account[1], account[2], account[3], account[4], account[5]]
 
     cursor.close()
     return render_template('settings.html', data=data, departments=depts)
@@ -131,6 +145,10 @@ def settings():
 #admin stuff
 @app.route('/addstudent', methods=['GET','POST'])
 def addstudent():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -164,6 +182,10 @@ def addstudent():
 
 @app.route('/readstudent', methods=['GET','POST'])
 def readStudent():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllStudents()"
@@ -182,6 +204,10 @@ def readStudent():
 
 @app.route('/updatestudent', methods=['GET','POST'])
 def updateStudent():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -230,6 +256,10 @@ def updateStudent():
 
 @app.route('/deletestudent', methods=['GET','POST'])
 def deleteStudent():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Student', msg='')
     if request.method == 'POST':
@@ -250,6 +280,10 @@ def deleteStudent():
 
 @app.route('/addinstructor', methods=['GET','POST'])
 def addInstructor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -284,6 +318,10 @@ def addInstructor():
 
 @app.route('/readinstructor', methods=['GET','POST'])
 def readInstructor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllInstructors()"
@@ -302,6 +340,10 @@ def readInstructor():
     
 @app.route('/updateinstructor', methods=['GET','POST'])
 def updateInstructor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -355,6 +397,10 @@ def updateInstructor():
 
 @app.route('/deleteinstructor', methods=['GET','POST'])
 def deleteInstructor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Instructor', msg='')
     if request.method == 'POST':
@@ -376,6 +422,10 @@ def deleteInstructor():
 
 @app.route('/adddept', methods=['GET','POST'])
 def addDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('add.html', show='Dept')
     if request.method == 'POST':
@@ -395,6 +445,10 @@ def addDept():
 
 @app.route('/readdept', methods=['GET','POST'])
 def readDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -413,6 +467,10 @@ def readDept():
 
 @app.route('/updatedept', methods=['GET','POST'])
 def updateDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('update.html', show='Dept')
     if request.method == 'POST':
@@ -432,6 +490,10 @@ def updateDept():
 
 @app.route('/deletedept', methods=['GET','POST'])
 def deleteDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Dept', msg='')
     if request.method == 'POST':
@@ -453,6 +515,10 @@ def deleteDept():
 
 @app.route('/addclassroom', methods=['GET','POST'])
 def addClassroom():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('add.html', show='Classroom')
     if request.method == 'POST':
@@ -473,6 +539,10 @@ def addClassroom():
 
 @app.route('/readclassroom', methods=['GET','POST'])
 def readClassroom():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllClassrooms()"
@@ -490,6 +560,10 @@ def readClassroom():
 
 @app.route('/updateclassroom', methods=['GET','POST'])
 def updateClassroom():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('update.html', show='Classroom')
     if request.method == 'POST':
@@ -512,6 +586,10 @@ def updateClassroom():
 
 @app.route('/deleteclassroom', methods=['GET','POST'])
 def deleteClassroom():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Classroom', msg='')
     if request.method == 'POST':
@@ -533,6 +611,10 @@ def deleteClassroom():
 
 @app.route('/addcourse', methods=['GET','POST'])
 def addCourse():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -561,6 +643,10 @@ def addCourse():
 
 @app.route('/readcourse', methods=['GET','POST'])
 def readCourse():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllCourses()"
@@ -579,6 +665,10 @@ def readCourse():
 
 @app.route('/updatecourse', methods=['GET','POST'])
 def updateCourse():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -612,6 +702,10 @@ def updateCourse():
 
 @app.route('/deletecourse', methods=['GET','POST'])
 def deleteCourse():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Course', msg='')
     if request.method == 'POST':
@@ -633,6 +727,10 @@ def deleteCourse():
 
 @app.route('/addsection', methods=['GET','POST'])
 def addSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('add.html', show='Section')
     if request.method == 'POST':
@@ -656,6 +754,10 @@ def addSection():
 
 @app.route('/readsection', methods=['GET','POST'])
 def readSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllSections()"
@@ -674,6 +776,10 @@ def readSection():
 
 @app.route('/updatesection', methods=['GET','POST'])
 def updateSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('update.html', show='Section')
     if request.method == 'POST':
@@ -699,6 +805,10 @@ def updateSection():
 
 @app.route('/deletesection', methods=['GET','POST'])
 def deleteSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Section', msg='')
     if request.method == 'POST':
@@ -727,6 +837,10 @@ def deleteSection():
 
 @app.route('/addtimeslot', methods=['GET','POST'])
 def addTimeSlot():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('add.html', show='TimeSlot')
     if request.method == 'POST':
@@ -749,6 +863,10 @@ def addTimeSlot():
 
 @app.route('/readtimeslot', methods=['GET','POST'])
 def readTimeSlot():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllTimeslots()"
@@ -767,6 +885,10 @@ def readTimeSlot():
 
 @app.route('/updatetimeslot', methods=['GET','POST'])
 def updateTimeSlot():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('update.html', show='TimeSlot')
     if request.method == 'POST':
@@ -799,6 +921,10 @@ def updateTimeSlot():
 
 @app.route('/deletetimeslot', methods=['GET','POST'])
 def deleteTimeSlot():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='TimeSlot', msg='')
     if request.method == 'POST':
@@ -820,6 +946,10 @@ def deleteTimeSlot():
 
 @app.route('/assignteacher', methods=['GET','POST'])
 def assignTeacher():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('add.html', show='Teacher', msg='')
     if request.method == 'POST':
@@ -847,6 +977,10 @@ def assignTeacher():
 
 @app.route('/modifyteacher', methods=['GET','POST'])
 def modifyTeacher():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('update.html', show='Teacher', msg='')
     if request.method == 'POST':
@@ -861,6 +995,10 @@ def modifyTeacher():
 
 @app.route('/removeteacher', methods=['GET','POST'])
 def removeTeacher():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('delete.html', show='Teacher', msg='')
     if request.method == 'POST':
@@ -877,6 +1015,10 @@ def removeTeacher():
 #average grade of all students by dept
 @app.route('/averagegradedept', methods=['GET','POST'])
 def averageGradeDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -964,6 +1106,10 @@ def averageGradeDept():
 #average grade of a class by semester range
 @app.route('/averagegradeclasssem', methods=['GET','POST'])
 def averageGradeClassSem():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('average.html', show='GetSem')
     if request.method == 'POST':
@@ -976,11 +1122,45 @@ def averageGradeClassSem():
         cursor = db.cursor()
         sql = "select * from takes where takes.course_id=%s and takes.year>=%s and takes.year<=%s;"
         cursor.execute(sql, (cid,byear,eyear))
-        data = cursor.fetchall()
+        baddata = cursor.fetchall()
         cursor.close()
-        if not data:
+        if not baddata:
             return render_template('average.html', show='NoData')
 
+        rawdata = list(baddata)
+        data = []
+        #here i have to get rid of unwanted semesters
+        #spring summer fall winter - order
+        for i in rawdata:
+            keep = True
+            if i[4] == int(byear):
+                #if bsem == 'Spring': do nothing because spring is first
+                if bsem == 'Summer':
+                    if i[3] == 'Spring':
+                        keep = False
+                elif bsem == 'Fall':
+                    if i[3] == 'Spring' or i[3] == 'Summer':
+                        keep = False
+                else: #winter
+                    if i[3] == 'Spring' or i[3] == 'Summer' or i[3] == 'Fall':
+                        keep = False
+            elif i[4] == int(eyear):
+                #if esem == 'Winter': do nothing because winter is last
+                print("endeyar")
+                if esem == 'Fall':
+                    if i[3] == 'Winter':
+                        keep = False
+                elif esem == 'Summer':
+                    if i[3] == 'Winter' or i[3] == 'Fall':
+                        keep = False
+                else: #spring
+                    if i[3] == 'Winter' or i[3] == 'Fall' or i[3] == 'Summer':
+                        keep = False
+            
+            if keep:
+                data.append(i)
+
+        print(data)
         grades = []
         for i in data:
             match i[5]:
@@ -1046,6 +1226,10 @@ def averageGradeClassSem():
 #best and worst performing classes (on average grade) by semester
 @app.route('/bestworstclasssem', methods=['GET','POST'])
 def bestWorstClassSem():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('average.html', show="GetBestWorst")
     if request.method == 'POST':
@@ -1125,6 +1309,10 @@ def bestWorstClassSem():
 #total students by dept
 @app.route('/totalstudentsdept', methods=['GET','POST'])
 def totalStudentsDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -1148,6 +1336,10 @@ def totalStudentsDept():
 #total current students by dept
 @app.route('/currentstudentsdept', methods=['GET','POST'])
 def currentStudentsDept():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Administrator':
+        return redirect('/')
     if request.method == 'GET':
         cursor = db.cursor()
         sql = "call getAllDepts()"
@@ -1171,6 +1363,10 @@ def currentStudentsDept():
 #instructor stuff
 @app.route('/submitgrades', methods=['GET','POST'])
 def submitGrades():
+        if 'loggedin' not in session:
+            return redirect('/login')
+        if session['permission'] != 'Instructor':
+            return redirect('/')
         cursor = db.cursor()
 
         input_studentid = request.form.get('student_id')
@@ -1190,6 +1386,10 @@ def submitGrades():
 
 @app.route('/addstudentadvisor', methods=['GET','POST'])
 def addStudentAdvisor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
 
     if request.method == 'POST':
 
@@ -1207,6 +1407,10 @@ def addStudentAdvisor():
 
 @app.route('/removestudentadvisor', methods=['GET','POST'])
 def removeStudentAdvisor():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
 
     if request.method == 'POST':
 
@@ -1225,6 +1429,10 @@ def removeStudentAdvisor():
 
 @app.route('/checkroster', methods=['GET','POST'])
 def checkroster():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('checkroster.html')
 
@@ -1244,6 +1452,10 @@ def checkroster():
 
 @app.route('/checksemesterroster', methods=['GET','POST'])
 def checkSemesterRoster():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('checksemesterroster.html')
 
@@ -1261,6 +1473,10 @@ def checkSemesterRoster():
 
 @app.route('/removestudentfromsection', methods=['GET','POST'])
 def removeStudentFromSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('removestudentfromsection.html')
 
@@ -1284,6 +1500,10 @@ def removeStudentFromSection():
 
 @app.route('/addprereq', methods=['GET', 'POST'])
 def addprereq():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('addprereq.html')
 
@@ -1302,6 +1522,10 @@ def addprereq():
 
 @app.route('/removeprereq')
 def removeprereq():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Instructor':
+        return redirect('/')
     if request.method == 'GET':
         return render_template('removeprereq.html')
 
@@ -1321,6 +1545,10 @@ def removeprereq():
 #student stuff
 @app.route('/registerclass', methods=['GET','POST'])
 def registerClass():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     if request.method == 'GET':
         return render_template('registerclass.html')
@@ -1342,6 +1570,10 @@ def registerClass():
 
 @app.route('/dropsection', methods=['GET','POST'])
 def dropSection():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     if request.method == 'GET':
         return render_template('dropsection.html')
@@ -1362,6 +1594,10 @@ def dropSection():
 
 @app.route('/finalgrades')
 def finalGrades():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     student_id = session['id']
 
@@ -1377,6 +1613,10 @@ def finalGrades():
 
 @app.route('/checkbysemester', methods=['GET','POST'])
 def checkBySemester():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     if request.method == 'GET':
         return render_template('checkbysemester.html')
@@ -1395,6 +1635,10 @@ def checkBySemester():
 
 @app.route('/sectioninfo', methods=['GET', 'POST'])
 def sectionInfo():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     if request.method == 'GET':
         return render_template('sectioninfo.html')
@@ -1415,6 +1659,10 @@ def sectionInfo():
 
 @app.route('/advisorinfo', methods=['GET'])
 def advisorInfo():
+    if 'loggedin' not in session:
+        return redirect('/login')
+    if session['permission'] != 'Student':
+        return redirect('/')
 
     student_id = session['id']
     cursor = db.cursor()

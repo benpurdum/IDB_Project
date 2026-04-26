@@ -131,7 +131,9 @@ for i in range(10):
 
 #add an admin to accounts
 pas = generate_password_hash("admin")
-sql.append(f"INSERT INTO accounts VALUES ('99999', 'admin', '{pas}', 'Administrator');")
+sql.append(f"INSERT INTO accounts VALUES ('99999', 'JohnAdmin', '{pas}', 'Administrator');")
+sql.append(f"INSERT INTO name VALUES ('99999', 'John', '', 'Admin', '');")
+sql.append(f"INSERT INTO admin VALUES ('99999', '1', 'Comp. Sci.');")
 
 #course - course_id	title	dept_name	credits	
 for i in range(len(courses)):

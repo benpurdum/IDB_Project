@@ -45,6 +45,16 @@ create table instructor
 	foreign key (ID) references accounts (ID)
 	);
 
+create table admin
+	(ID			varchar(5), 
+	 name_id			varchar(5) not null, 
+	 dept_name		varchar(20), 
+	 primary key (ID),
+	 foreign key (dept_name) references department (dept_name)
+		on delete set null,
+	foreign key (ID) references accounts (ID)
+	);
+
 create table name
 	(name_id	varchar(5),
 	 first_name		varchar(30) not null,

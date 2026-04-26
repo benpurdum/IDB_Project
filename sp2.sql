@@ -560,3 +560,77 @@ DELIMITER ;
 --SHOW BEST AND WORST PERFORMING CLASSES (BY GRADES) ON SEMESTER
 --SHOW TOTAL STUDENTS (PAST AND CURRENT) BY DEPARTMENT
 --SHOW CURRENT STUDENTS BY DEPARTMENT
+
+--admin personal info
+DELIMITER //
+CREATE PROCEDURE updateAdminName (
+    IN pID VARCHAR(5),
+    IN pFirstName VARCHAR(20),
+    IN pMiddleName VARCHAR(20),
+    IN pLastName VARCHAR(20),
+    IN pSecondName VARCHAR(20)
+)
+BEGIN
+    IF pFirstName IS NOT NULL AND pFirstName <> '' THEN
+        UPDATE name
+        SET first_name = pFirstName
+        WHERE name_id = (
+            SELECT name_id
+            FROM admin
+            WHERE ID = pID
+        );
+    END IF;
+    IF pMiddleName IS NOT NULL AND pMiddleName <> '' THEN
+        UPDATE name
+        SET middle_name = pMiddleName
+        WHERE name_id = (
+            SELECT name_id
+            FROM admin
+            WHERE ID = pID
+        );
+    END IF;
+    IF pLastName IS NOT NULL AND pLastName <> '' THEN
+        UPDATE name
+        SET last_name = pLastName
+        WHERE name_id = (
+            SELECT name_id
+            FROM admin
+            WHERE ID = pID
+        );
+    END IF;
+    IF pSecondName IS NOT NULL AND pSecondName <> ''  THEN
+        UPDATE name
+        SET second_name = pSecondName
+        WHERE name_id = (
+            SELECT name_id
+            FROM admin
+            WHERE ID = pID
+        );
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE updateAdminDept (
+    IN pID VARCHAR(5),
+    IN pDept_name VARCHAR(20)
+)
+BEGIN
+    UPDATE admin
+    SET dept_name = pDept_name
+    WHERE admin.ID = pID;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE findAdmin (
+    IN pID VARCHAR(5)
+)
+BEGIN
+    select s.ID, n.first_name, n.middle_name, n.last_name, n.second_name, s.dept_name
+    from admin s
+    inner join name n
+    on s.name_id = n.name_id
+    where s.ID = pID;
+END
+DELIMITER ;

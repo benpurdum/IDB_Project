@@ -47,7 +47,6 @@
         {% else %}
             <p></p>
         {% endif %}
-        {% if session['permission'] != 'Administrator' %}
         <tr>
             <td>Update personal info:</td>
             <td>(Leave any info not to be updated blank)</td>
@@ -93,8 +92,6 @@
         <div class="msg">{{ msg }}</div>
         <input type="submit" value="Submit">
     </form>
-    {% else %}
     </table>
-    {% endif %}
 </div>
 {% endblock %}
