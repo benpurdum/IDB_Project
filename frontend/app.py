@@ -1439,11 +1439,9 @@ def checkroster():
     instructor_id = session['id']
     course_id = request.form['course_id']
     section_id = request.form['section_id']
-    semester = request.form['semester']
-    year = request.form['year']
 
     cursor = db.cursor()
-    cursor.execute('CALL checkSectionRoster(%s, %s, %s, %s, %s)', (instructor_id, course_id, section_id, semester, year))
+    cursor.execute('CALL checkSectionRoster(%s, %s, %s)', (instructor_id, course_id, section_id))
 
     data = cursor.fetchall()
     cursor.close()
@@ -1520,7 +1518,7 @@ def addprereq():
 
 
 
-@app.route('/removeprereq')
+@app.route('/removeprereq', methods=['GET', 'POST'])
 def removeprereq():
     if 'loggedin' not in session:
         return redirect('/login')
